@@ -9,7 +9,6 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import it.unipi.hadoop.LetterCountcombiner;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.DoubleWritable;
@@ -19,7 +18,17 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
+import it.unipi.hadoop.Combiner.LetterCount;
+import it.unipi.hadoop.Combiner.LetterFrequency;
+import it.unipi.hadoop.InMapper.*;
+
 public class Start {
+    private static final int INPUT_PATH = 0;
+    private static final int OUTPUT_PATH = 1;
+    private static final int N_REDUCERS = 2;
+    private static final int METHOD = 3;
+    private static final int DefaultNReducers = 1;
+    private static final String DefaultMethod = "InMapper";
 
     public static long getTotalLetters(Configuration conf, String outputString) throws IOException {
         FileSystem fs = FileSystem.get(conf);
@@ -47,35 +56,64 @@ public class Start {
     }
 
     public static void main(String[] args) {
-        // read the args and initialize two jobs
-        // one for LetterCountcombiner which takes the first input and outputs to a temp file
-        // then pass the temp file as input to the second job along with the first input
-        // to calculate letter frequencies
         try {
             Configuration conf = new Configuration();
-            Integer nReducers= Integer.parseInt(args[2]);
+            int nReducers = DefaultNReducers;
+            String method = DefaultMethod;
+            if (args.length > 2 && args[2] != null) {
+                try {
+                    nReducers = Integer.parseInt(args[2]);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid number of reducers provided. Using default value: " + nReducers);
+                }
+            }
+            
+            // Check if args[3] (method) is provided and is either "InMapper" or "Combiner"
+            if (args.length > 3 && args[3] != null) {
+                if (args[3].equals("InMapper") || args[3].equals("Combiner")) {
+                    method = args[3];
+                } else {
+                    System.out.println("Invalid method provided. Using default value: " + method);
+                }
+            }
             Job job1 = Job.getInstance(conf, "LetterCountcombiner");
             job1.setNumReduceTasks(nReducers);
-            System.out.println("Running LetterCountcombiner job with " + nReducers + " reducers"); // Debugging output
-            job1.setJarByClass(LetterCountcombiner.class);
-            job1.setMapperClass(LetterCountcombiner.LetterCounterMapper.class);
-            job1.setReducerClass(LetterCountcombiner.LetterCounterReducer.class);
+            System.out.println("Running LetterCountcombiner job with " + nReducers + " reducers"+ " and method: " + method);
+    
+            if (method.equals("InMapper")) {
+                job1.setJarByClass(it.unipi.hadoop.InMapper.LetterCount.class);
+                job1.setMapperClass(it.unipi.hadoop.InMapper.LetterCount.LetterCounterMapper.class);
+                job1.setReducerClass(it.unipi.hadoop.InMapper.LetterCount.LetterCounterReducer.class);
+            } else if (method.equals("Combiner")) {
+                job1.setJarByClass(it.unipi.hadoop.Combiner.LetterCount.class);
+                job1.setMapperClass(it.unipi.hadoop.Combiner.LetterCount.LetterCounterMapper.class);
+                job1.setReducerClass(it.unipi.hadoop.Combiner.LetterCount.LetterCounterReducer.class);
+            }
+    
             job1.setOutputKeyClass(Text.class);
             job1.setOutputValueClass(LongWritable.class);
             job1.setInputFormatClass(TextInputFormat.class);
             job1.setOutputFormatClass(TextOutputFormat.class);
-
+    
             FileInputFormat.addInputPath(job1, new Path(args[0]));
             FileOutputFormat.setOutputPath(job1, new Path("temp"));
             job1.waitForCompletion(true);
-
+    
             long totalLetters = getTotalLetters(conf, "temp");
-            //prova
+    
             Job job2 = Job.getInstance(conf, "LetterFrequencycombiner");
             job2.setNumReduceTasks(nReducers);
-            job2.setJarByClass(LetterFrequencycombiner.class);
-            job2.setMapperClass(LetterFrequencycombiner.FrequencyLetterMapper.class);
-            job2.setReducerClass(LetterFrequencycombiner.FrequencyLetterReducer.class);
+    
+            if (method.equals("InMapper")) {
+                job2.setJarByClass(it.unipi.hadoop.InMapper.LetterFrequency.class);
+                job2.setMapperClass(it.unipi.hadoop.InMapper.LetterFrequency.FrequencyLetterMapper.class);
+                job2.setReducerClass(it.unipi.hadoop.InMapper.LetterFrequency.FrequencyLetterReducer.class);
+            } else if (method.equals("combiner")) {
+                job2.setJarByClass(it.unipi.hadoop.Combiner.LetterFrequency.class);
+                job2.setMapperClass(it.unipi.hadoop.Combiner.LetterFrequency.FrequencyLetterMapper.class);
+                job2.setReducerClass(it.unipi.hadoop.Combiner.LetterFrequency.FrequencyLetterReducer.class);
+            }
+    
             job2.setMapOutputKeyClass(Text.class);
             job2.setMapOutputValueClass(LongWritable.class);
             job2.setOutputKeyClass(Text.class);
@@ -85,9 +123,9 @@ public class Start {
             FileInputFormat.addInputPath(job2, new Path(args[0]));
             FileOutputFormat.setOutputPath(job2, new Path(args[1]));
             job2.getConfiguration().setLong("totalLetters", totalLetters);
-            System.out.println("Running LetterFrequencycombiner job with totalLetters: " + totalLetters); // Debugging output
+            System.out.println("Running LetterFrequencycombiner job with totalLetters: " + totalLetters);
             System.exit(job2.waitForCompletion(true) ? 0 : 1);
-
+    
         } catch (Exception e) {
             e.printStackTrace();
         }

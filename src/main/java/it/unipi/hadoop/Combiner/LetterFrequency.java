@@ -1,4 +1,4 @@
-package it.unipi.hadoop;
+package it.unipi.hadoop.Combiner;
 
 import java.io.IOException;
 import org.apache.hadoop.io.DoubleWritable;
@@ -7,7 +7,9 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class LetterFrequencycombiner {
+import it.unipi.hadoop.CharacterProcessor;
+
+public class LetterFrequency {
     public static class FrequencyLetterMapper extends Mapper <Object, Text, Text, LongWritable> 
     {
         private Text reducerKey= new Text();

@@ -1,4 +1,4 @@
-package it.unipi.hadoop;
+package it.unipi.hadoop.InMapper;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,8 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+
+import it.unipi.hadoop.CharacterProcessor;
 
 
 public class LetterFrequency {
@@ -57,7 +59,7 @@ public static class FrequencyLetterReducer extends Reducer<Text, LongWritable, T
     private long totalLetter;
     @Override
     public void setup(Context context){
-        totalLetter = context.getConfiguration().getLong("totalLetters", 2);
+        totalLetter = context.getConfiguration().getLong("totalLetters", 1);
     }
     @Override
     public void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException{

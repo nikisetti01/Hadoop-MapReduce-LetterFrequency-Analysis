@@ -1,5 +1,5 @@
 
-package it.unipi.hadoop;
+package it.unipi.hadoop.Combiner;
 import it.unipi.hadoop.CharacterProcessor;
 import java.io.IOException;
 import java.util.Map;
@@ -19,7 +19,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.conf.Configuration;
-public class LetterCountcombiner {
+public class LetterCount {
     public static class LetterCounterMapper extends Mapper<Object, Text, Text , LongWritable>
     {
         private Text reducerKey= new Text("total_letters");

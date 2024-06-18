@@ -1,5 +1,5 @@
 
-package it.unipi.hadoop;
+package it.unipi.hadoop.InMapper;
 import it.unipi.hadoop.CharacterProcessor;
 import java.io.IOException;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class LetterCount {
    
        
     }
-    public static class CounterReducer extends Reducer<Text, LongWritable, Text, LongWritable>
+    public static class LetterCounterReducer extends Reducer<Text, LongWritable, Text, LongWritable>
     {
  
         @Override
