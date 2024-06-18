@@ -1,0 +1,15 @@
+it/unipi/hadoop/CharacterProcessor.class
+it/unipi/hadoop/LetterFrequencycombiner$FrequencyLetterReducer.class
+it/unipi/hadoop/LetterFrequency$FrequencyLetterReducer.class
+it/unipi/hadoop/LetterFrequency$FrequencyLetterMapper.class
+it/unipi/hadoop/LetterCountcombiner$LetterCounterReducer.class
+it/unipi/hadoop/LetterCountcombiner.class
+it/unipi/hadoop/LetterCount$LetterCounterMapper.class
+it/unipi/hadoop/LetterFrequencycombiner$FrequencyLetterCombiner.class
+it/unipi/hadoop/LetterCountcombiner$LetterCounterMapper.class
+it/unipi/hadoop/Start.class
+it/unipi/hadoop/LetterFrequencycombiner.class
+it/unipi/hadoop/LetterFrequencycombiner$FrequencyLetterMapper.class
+it/unipi/hadoop/LetterCount.class
+it/unipi/hadoop/LetterFrequency.class
+it/unipi/hadoop/LetterCount$CounterReducer.class
