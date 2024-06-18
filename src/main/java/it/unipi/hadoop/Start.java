@@ -70,7 +70,7 @@ public class Start {
             job1.waitForCompletion(true);
 
             long totalLetters = getTotalLetters(conf, "temp");
-
+            //prova
             Job job2 = Job.getInstance(conf, "LetterFrequencycombiner");
             job2.setNumReduceTasks(nReducers);
             job2.setJarByClass(LetterFrequencycombiner.class);
