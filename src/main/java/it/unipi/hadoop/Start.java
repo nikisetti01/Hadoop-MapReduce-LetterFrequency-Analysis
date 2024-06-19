@@ -18,9 +18,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-import it.unipi.hadoop.Combiner.LetterCount;
-import it.unipi.hadoop.Combiner.LetterFrequency;
-import it.unipi.hadoop.InMapper.*;
 
 public class Start {
     private static final int INPUT_PATH = 0;
@@ -76,9 +73,9 @@ public class Start {
                     System.out.println("Invalid method provided. Using default value: " + method);
                 }
             }
-            Job job1 = Job.getInstance(conf, "LetterCountcombiner");
+            Job job1 = Job.getInstance(conf, "LetterCount");
             job1.setNumReduceTasks(nReducers);
-            System.out.println("Running LetterCountcombiner job with " + nReducers + " reducers"+ " and method: " + method);
+            System.out.println("Running LetterCount job with " + nReducers + " reducers"+ " and method: " + method);
     
             if (method.equals("InMapper")) {
                 job1.setJarByClass(it.unipi.hadoop.InMapper.LetterCount.class);
@@ -101,14 +98,14 @@ public class Start {
     
             long totalLetters = getTotalLetters(conf, "temp");
     
-            Job job2 = Job.getInstance(conf, "LetterFrequencycombiner");
+            Job job2 = Job.getInstance(conf, "LetterFrequency");
             job2.setNumReduceTasks(nReducers);
     
             if (method.equals("InMapper")) {
                 job2.setJarByClass(it.unipi.hadoop.InMapper.LetterFrequency.class);
                 job2.setMapperClass(it.unipi.hadoop.InMapper.LetterFrequency.FrequencyLetterMapper.class);
                 job2.setReducerClass(it.unipi.hadoop.InMapper.LetterFrequency.FrequencyLetterReducer.class);
-            } else if (method.equals("combiner")) {
+            } else if (method.equals("Combiner")) {
                 job2.setJarByClass(it.unipi.hadoop.Combiner.LetterFrequency.class);
                 job2.setMapperClass(it.unipi.hadoop.Combiner.LetterFrequency.FrequencyLetterMapper.class);
                 job2.setReducerClass(it.unipi.hadoop.Combiner.LetterFrequency.FrequencyLetterReducer.class);
