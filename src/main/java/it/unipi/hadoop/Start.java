@@ -54,6 +54,7 @@ public class Start {
 
     public static void main(String[] args) {
         try {
+            System.out.println("Input Path: " + args[INPUT_PATH]);
             Configuration conf = new Configuration();
             int nReducers = DefaultNReducers;
             String method = DefaultMethod;
@@ -93,6 +94,12 @@ public class Start {
             job1.setOutputFormatClass(TextOutputFormat.class);
     
             FileInputFormat.addInputPath(job1, new Path(args[0]));
+            //se esiste la cartella temp la elimino
+            FileSystem fs = FileSystem.get(conf);
+            Path tempPath = new Path("temp");
+            if (fs.exists(tempPath)) {
+                fs.delete(tempPath, true);
+            }
             FileOutputFormat.setOutputPath(job1, new Path("temp"));
             job1.waitForCompletion(true);
     
