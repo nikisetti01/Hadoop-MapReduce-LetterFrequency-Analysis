@@ -58,16 +58,16 @@ public class Start {
             Configuration conf = new Configuration();
             int nReducers = DefaultNReducers;
             String method = DefaultMethod;
-            if (args.length > 2 && args[2] != null) {
+            if (args.length > 2 && args[N_REDUCERS] != null) {
                 try {
-                    nReducers = Integer.parseInt(args[2]);
+                    nReducers = Integer.parseInt(args[N_REDUCERS]);
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid number of reducers provided. Using default value: " + nReducers);
                 }
             }
             
             // Check if args[3] (method) is provided and is either "InMapper" or "Combiner"
-            if (args.length > 3 && args[3] != null) {
+            if (args.length > 3 && args[METHOD] != null) {
                 if (args[3].equals("InMapper") || args[3].equals("Combiner")) {
                     method = args[3];
                 } else {
@@ -124,8 +124,8 @@ public class Start {
             job2.setOutputValueClass(DoubleWritable.class);
             job2.setInputFormatClass(TextInputFormat.class);
             job2.setOutputFormatClass(TextOutputFormat.class);
-            FileInputFormat.addInputPath(job2, new Path(args[0]));
-            FileOutputFormat.setOutputPath(job2, new Path(args[1]));
+            FileInputFormat.addInputPath(job2, new Path(args[INPUT_PATH]));
+            FileOutputFormat.setOutputPath(job2, new Path(args[OUTPUT_PATH]));
             job2.getConfiguration().setLong("totalLetters", totalLetters);
             System.out.println("Running LetterFrequencycombiner job with totalLetters: " + totalLetters);
             System.exit(job2.waitForCompletion(true) ? 0 : 1);
