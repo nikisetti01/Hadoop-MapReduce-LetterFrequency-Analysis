@@ -7,16 +7,16 @@ input_dir="/user/hadoop/"
 hdfs_output_dir="/user/hadoop/results"
 
 # Array dei nomi dei file di input
-input_files=("3KB.txt" "3MB.txt" "3GB.txt")
+input_files=("300MB.txt")
 
 # Array delle dimensioni corrispondenti ai file di input
-sizes=("3KB.txt" "3MB.txt" "3GB.txt")
+sizes=("300MB.txt")
 
 # Array delle modalità
 modes=("Combiner" "InMapper")
 
 # Array del numero di riduttori
-reducers=(5)  # Puoi aggiungere altri valori se necessario
+reducers=(3 5 10)  # Puoi aggiungere altri valori se necessario
 
 # Percorso completo di Hadoop
 HADOOP_CMD="/opt/hadoop/bin/hadoop"
@@ -47,7 +47,7 @@ run_hadoop() {
   fi
 }
 
-# Esegui per ciascun file di input, modalità e numero di riduttori
+# Esegui per ciascun file di input, modalità e numero di reducers
 for ((i=0; i<${#input_files[@]}; i++)); do
   input_file=${input_files[$i]}
   size=${sizes[$i]}

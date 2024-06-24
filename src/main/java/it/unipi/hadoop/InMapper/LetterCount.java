@@ -1,79 +1,75 @@
-
 package it.unipi.hadoop.InMapper;
+
 import it.unipi.hadoop.CharacterProcessor;
 import java.io.IOException;
-import java.util.Map;
-import java.util.regex.Pattern;
- 
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
- 
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.conf.Configuration;
+
 public class LetterCount {
-    public static class LetterCounterMapper extends Mapper<Object, Text, Text , LongWritable>
-    {
-        private Text reducerKey= new Text("total_letters");
+
+    public static class LetterCounterMapper extends Mapper<Object, Text, Text, LongWritable> {
+
+        // Define the key and value to be used in the reducer
+        private Text reducerKey = new Text("total_letters");
         private LongWritable reducerValue;
-        public void setup(Context context){
+
+        // Override the setup method to initialize the reducer value
+        @Override
+        protected void setup(Context context) {
             reducerValue = new LongWritable(0);
-           
         }
+
+        // Override the map method
         @Override
-        public void map(Object key, Text value, Context context){
-            String line=value.toString();
-            for(char c: line.toCharArray()){
-                char carattere=CharacterProcessor.processCharacter(c);
-                Boolean check = carattere != 0 ? true : false;
-                if(check)
-                    reducerValue.set(reducerValue.get()+1);
-                
+        protected void map(Object key, Text value, Context context) {
+            // Convert the input line to a string
+            String line = value.toString();
+
+            // Iterate over each character in the line
+            for (char c : line.toCharArray()) {
+                // Process the character using CharacterProcessor
+                char carattere = CharacterProcessor.processCharacter(c);
+
+                // Check if the character is valid
+                boolean check = carattere != 0;
+
+                // Increment the count if the character is valid
+                if (check) {
+                    reducerValue.set(reducerValue.get() + 1);
+                }
             }
- 
-           
         }
+
+        // Override the cleanup method to emit the final key-value pair
         @Override
-        public void cleanup(Context context) throws IOException, InterruptedException
-        {
-            // Emit the final key-value pair
+        protected void cleanup(Context context) throws IOException, InterruptedException {
             context.write(reducerKey, reducerValue);
         }
- 
-   
-       
     }
-    public static class LetterCounterReducer extends Reducer<Text, LongWritable, Text, LongWritable>
-    {
- 
+
+    public static class LetterCounterReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+
+        // Override the reduce method
         @Override
-        public void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException
-        {
+        protected void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
             // Initialize the reducer value
-            LongWritable reducerValue = new LongWritable();
-            reducerValue.set(0);
- 
-            // Iterate over the values
+            long sum = 0;
+
+            // Sum up all the values for the given key
             for (LongWritable value : values) {
-                reducerValue.set(reducerValue.get() + value.get());
+                sum += value.get();
             }
- 
-            // Write the output
-            context.write(key, reducerValue);
+
+            // Write the final aggregated count to the context
+            context.write(key, new LongWritable(sum));
         }
     }
-  
 }
- 
- 
- 
- 
- 

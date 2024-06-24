@@ -6,7 +6,7 @@ import re
 
 # Configura il client HDFS
 hdfs_url = 'http://10.1.1.114:9870'  # URL del tuo HDFS
-hdfs_log_dir = '/user/hadoop/results'
+hdfs_log_dir = '/user/hadoop/results/300MB.txt'
 client = InsecureClient(hdfs_url, user='hadoop')
 
 # Funzione per estrarre dati dai log Hadoop
@@ -149,45 +149,11 @@ else:
     df = df[df['execution_time'].notnull()]
 
 # Salva il DataFrame in un file CSV (opzionale)
-output_path = '/tmp/hadoop_logs_summary.csv'
+output_path = '/tmp/hadoop_logs_summary_300mb.csv'
 try:
     df.to_csv(output_path, index=False)  # Usa /tmp/ o un altro percorso sicuro
     print(f"File salvato con successo in {output_path}")
 except PermissionError:
     print(f"Permessi insufficienti per salvare il file in {output_path}")
 
-# Imposta lo stile dei grafici
-sns.set(style="whitegrid")
 
-# Funzione per generare grafici
-def plot_metric(metric, ylabel, filename):
-    if metric not in df.columns:
-        print(f"Colonna {metric} non trovata nei dati")
-        return
-    plt.figure(figsize=(12, 6))
-    sns.boxplot(x='job_size', y=metric, hue='mode', data=df, palette="Set3")
-    plt.title(f'{ylabel} per Dimensione del File e Modalità')
-    plt.xlabel('Dimensione del File')
-    plt.ylabel(ylabel)
-    plt.legend(title='Modalità')
-    plt.tight_layout()
-    plt.savefig(f'/tmp/{filename}')  # Salva in /tmp
-    plt.show()
-
-# Grafico dei tempi di esecuzione per dimensione del file e modalità
-plot_metric('execution_time', 'Tempo di Esecuzione (secondi)', 'execution_times_by_size_and_mode.png')
-
-# Grafico del tempo di map per dimensione del file e modalità
-plot_metric('map_time', 'Tempo di Map (secondi)', 'map_times_by_size_and_mode.png')
-
-# Grafico del tempo di reduce per dimensione del file e modalità
-plot_metric('reduce_time', 'Tempo di Reduce (secondi)', 'reduce_times_by_size_and_mode.png')
-
-# Grafico dell'uso della memoria per dimensione del file e modalità
-plot_metric('memory_usage', 'Uso della Memoria (GB)', 'memory_usage_by_size_and_mode.png')
-
-# Grafico dei vcore-milliseconds per dimensione del file e modalità
-plot_metric('vcore_ms', 'vcore-milliseconds', 'vcore_ms_by_size_and_mode.png')
-
-# Grafico dei tempi di esecuzione per numero di reducers
-plot_metric('execution_time', 'Tempo di Esecuzione (secondi)', 'execution_times_by_reducers.png')
