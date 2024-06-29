@@ -19,7 +19,7 @@ public class LetterCount {
         
         // Define the key and value to be used in the reducer
         private Text reducerKey = new Text("total_letters");
-        private LongWritable reducerValue = new LongWritable(0);
+        private LongWritable reducerValue = new LongWritable(1);
     
         // Override the map method
         @Override
