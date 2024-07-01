@@ -147,6 +147,7 @@ public class Start {
             } else if (method.equals("Combiner")) {
                 job2.setJarByClass(it.unipi.hadoop.Combiner.LetterFrequency.class);
                 job2.setMapperClass(it.unipi.hadoop.Combiner.LetterFrequency.FrequencyLetterMapper.class);
+                job2.setCombinerClass(it.unipi.hadoop.Combiner.LetterFrequency.FrequencyLetterCombiner.class);
                 job2.setReducerClass(it.unipi.hadoop.Combiner.LetterFrequency.FrequencyLetterReducer.class);
             }
 
