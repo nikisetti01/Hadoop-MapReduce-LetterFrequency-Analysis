@@ -111,6 +111,7 @@ public class Start {
             } else if (method.equals("Combiner")) {
                 job1.setJarByClass(it.unipi.hadoop.Combiner.LetterCount.class);
                 job1.setMapperClass(it.unipi.hadoop.Combiner.LetterCount.LetterCounterMapper.class);
+                job1.setCombinerClass(it.unipi.hadoop.Combiner.LetterCount.LetterCounterReducer.class);
                 job1.setReducerClass(it.unipi.hadoop.Combiner.LetterCount.LetterCounterReducer.class);
             }
 
