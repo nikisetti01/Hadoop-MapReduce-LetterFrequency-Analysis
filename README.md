@@ -10,8 +10,8 @@ Welcome to the Letter Frequency Count application using Hadoop MapReduce! This p
      - **Classic Combiner**: Uses the classic combiner technique.
 
 2. **Python Analysis**:
-   - **`performance_analysis.py`**: Analyzes Hadoop application performance using various HDFS and YARN parameters.
-   - **`language_comparison.py`**: Compares Latin text with texts in Romance languages to determine linguistic affinities and differences.
+   - **`performance_evaluation`**: Analyzes Hadoop application performance using various HDFS and YARN parameters.
+   - **`linguistic_analysis`**: Compares Latin text with texts in Romance languages to determine linguistic affinities and differences.
 
 ## 💻 Java MapReduce Code
 
@@ -35,7 +35,7 @@ This file contains two implementations of the MapReduce job for counting letter 
 
 ## 📊 Python Analysis
 
-### `performance_analysis.py`
+### `performance_evaluation`
 
 This script evaluates the performance of the Hadoop MapReduce job based on various parameters:
 
@@ -44,7 +44,7 @@ This script evaluates the performance of the Hadoop MapReduce job based on vario
 
 **Objective**: Identify performance bottlenecks and optimize configuration settings.
 
-### `language_comparison.py`
+### `linguistic_analysis`
 
 This script performs a comparative analysis of texts in Latin and Romance languages:
 
